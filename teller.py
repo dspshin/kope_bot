@@ -20,12 +20,11 @@ def sendMessage(id, msg):
         traceback.print_exc(file=sys.stdout)
 
 def help(id):
-    sendMessage(id, '''아파트 전월세 정보 알림용 텔레그램 봇입니다.
+    sendMessage(id, '''코프(코리언 프리미엄) 알림용 텔레그램 봇입니다.
 명령어 사용법:
-/noti add 지역코드 필터 : 노티 등록. howmuch의 사용법과 유사하며, 해당 결과가 있을 경우 매일 아침에 전송함(필터생략가능. 첫 노티는 전월 데이터도 전송됩니다).
- ex. /noti add 11710 잠실
-/noti list : 노티 리스트 조회.
-/noti remove 아이디 : 노티 제거.
+/noti add : 노티 등록.
+/noti list : 노티 조회.
+/noti remove : 노티 제거.
 
 자매품>
 @apart_bot : 아파트 매매 봇
@@ -67,8 +66,6 @@ def noti(command, user):
             sendMessage(user, '조회 결과가 없습니다.')
         return True
     if command=='remove':
-        if not subparam:
-            return False
         try:
             c.execute('DELETE FROM user WHERE user="%s"'%(user))
             conn.commit()
@@ -114,7 +111,7 @@ def handle(msg):
             if len(args)>1:
                 command = args[1]
                 subparam = text.split(command)[1].strip()
-                res = noti(command, subparam, chat_id)
+                res = noti(command, chat_id)
                 if res:
                     return
 

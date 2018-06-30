@@ -1,15 +1,22 @@
 #-*- coding: utf-8 -*-
-from upbitpy import Upbitpy
 import requests
 from forex_python.converter import CurrencyRates
 
 #logging.basicConfig(level=logging.DEBUG)
-upbitpy = Upbitpy()
-c = CurrencyRates()
+
+def get_upbit_price(coinName):
+  headers = {
+      'User-Agent': 'kope bot v1.0',
+  }
+  r = requests.get(url="https://crix-api-endpoint.upbit.com/v1/crix/candles/minutes/1?code=CRIX.UPBIT."+coinName, headers=headers)
+  print r
+  a = r.json()
+  c = a[0]
+  return c["tradePrice"]
 
 def get_kope(coinName="BTC"):
-  ticker = upbitpy.get_ticker(['KRW-'+coinName.upper()])
-  btckrw_upbit = float( ticker[0]['trade_price'] )
+  ticker = get_upbit_price('KRW-'+coinName.upper())
+  btckrw_upbit = float( ticker )
   print( 'upbit',coinName,'krw :', btckrw_upbit )
 
   r = requests.get(url='https://api.bitfinex.com/v1/ticker/'+coinName.lower()+'usd')
@@ -35,6 +42,6 @@ get_kope("btc")
 #get_kope("trx")
 #get_kope("xlm")
 #get_kope("snt")
-get_kope("neo")
+#get_kope("neo")
 
 
