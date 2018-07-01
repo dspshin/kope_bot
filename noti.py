@@ -18,8 +18,7 @@ from forex_python.converter import CurrencyRates
 #logging.basicConfig(level=logging.DEBUG)
 c = CurrencyRates()
 
-#ROOT = '/root/git/.../'
-ROOT = "./"
+ROOT = '/root/git/kope_bot/'
 
 #텔레그램 상으로는 4096까지 지원함. 가독성상 1000정도로 끊자.
 MAX_MSG_LENGTH = 1000
@@ -44,6 +43,10 @@ def get_kope(coinName="BTC"):
     btckrw_upbit = float( ticker )
     print( 'upbit',coinName,'krw :', btckrw_upbit )
 
+    # exceptions
+    if coinName == 'qtum':
+        coinName = 'qtm'
+
     r = requests.get(url='https://api.bitfinex.com/v1/ticker/'+coinName.lower()+'usd')
     btcusd = float( r.json()['last_price'] )
 
@@ -58,7 +61,7 @@ def get_kope(coinName="BTC"):
     kope = (btckrw_upbit / btckrw_bitfinex) - 1
     print( coinName,'kope :', kope )
 
-    return kope, btckrw_upbit
+    return kope*100, btckrw_upbit
 
 def getCoinData():
     coins = [
@@ -69,13 +72,14 @@ def getCoinData():
         "trx",
         "xlm",
         "snt",
-        "neo"
+        "neo",
+        "qtum",
     ];
     res = []
     for coin in coins:
         kope, price = get_kope(coin)
         kope = str(kope)[:5]
-        res.append( coin.upper() + " : "+kope+" ("+str(price)+")" )
+        res.append( coin.upper() + " : "+kope+"% ("+str(price)+"KRW)" )
     return res
 
 def runNoti():
